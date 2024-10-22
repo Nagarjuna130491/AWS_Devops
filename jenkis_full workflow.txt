@@ -1,0 +1,388 @@
+DEVOPS - BATCH14:
+
+         7396627149
+
+sudo su - 
+
+=====================================================================>
+JENKINS SCRIPT :
+
+
+#!/bin/bash 
+
+
+sudo yum update –y
+ 
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo	
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+sudo yum upgrade
+sudo dnf install java-17-amazon-corretto -y
+sudo yum install jenkins -y
+sudo systemctl enable jenkins
+sudo systemctl start jenkins	
+
+
+
+=========================================
+date: 20 sep 24:
+
+sudo su -   ---> root 
+
+hostname 
+hostnamectl set-hostname jenkins 
+
+=============================
+
+systemctl status jenkins 
+
+cat /var/lib/jenkins/secrets/initialAdminPassword
+===============================
+
+
+pwd 
+
+ls or  ll or  ls -la 
+
+
+touch file1 file2 file3 
+mkdir dir1 dir2 dir3 
+
+rm -rf file/dirname
+
+cd dir1 
+
+cd ..
+
+========================
+yum install <pkg> 
+
+cat /var/lib/jenkins/secrets/initialAdminPassword
+
+======================================
+DATE : 21 SEP 24
+
+clear  / ctrl + L 
+
+ctrl + C 
+
+hostname
+hostname -I 
+
+
+
+history 
+yum install tree -y 
+
+mkdir -p a/b/c/d/e/ 
+
+mv chiru 1/2/3
+cp pavan a/b 
+
+---
+
+
+absolute path vs relative path 
+--------
+
+top 
+lscpu 
+free -g 
+==========
+
+ Filesystem Hierarchy Standard (FHS):
+ 
+ windows :
+
+C: - Root directory: The main drive (commonly C) that contains the system files.
+C:\Program Files -  Installed applications: Default location for installed software.
+C:\Windows - Operating system files: Contains system files, drivers
+C:\Users - 
+C:\Temp
+C:\ProgramData - Application data: Holds application data that is not user-specific.
+C:\System32 - System binaries: Contains essential system executables and libraries.
+D:
+
+-----------------
+root --> /
+ll
+ /bin – binary or executable programs.
+ /sbin – binary executable programs for an administrator.
+ 
+/etc – system configuration files.
+/home – home directory. It is the default current directory.
+/opt – optional or third-party software.
+/tmp – temporary space, typically cleared on reboot.
+/usr – User related programs.
+/var – log files.
+
+=========
+user permission triangle :
+
+useradd madhu 
+passwd madhu 
+
+userdel -r madhu
+
+su - madhu 
+
+--------------------
+
+wget  
+
+unzip <name.zip>
+zip –r name.zip <directory_name>
+
+
+tar -xvf <xyz.tar.gz>
+tar -cvf name.tar.gz <directory_name> 
+
+---------------------------
+
+
+
+--------
+
+
+
+----
+
+VI /VIM editor  / nano 
+------
+esc --> i 
+   -- data  -
+   -- data  - 
+
+esc: w
+esc: q 
+
+--------------------------
+
+tail -n fname 
+head -n fname 
+more fname 
+-------
+
+grep -iR "madhu"
+-----------------
+
+ps -ef 
+
+ps -ef | grep tomcat 
+
+
+
+
+-----
+
+df (disk free or disk filesystem) 
+
+
+
+df -h 
+
+In Windows, drives such as C:, D:, and E: are logical designations assigned to storage devices or partitions. Each drive letter represents a separate filesystem namespace, allowing users and applications to access files and directories on that specific storage unit. 
+
+
+In Linux, the concept of drive letters like C:, D:, and E: does not exist. Instead, Linux uses a single hierarchical directory structure that begins at the root directory (/). All storage devices, partitions, and network filesystems are integrated into this hierarchy by mounting them at specific directories
+---------------------------
+
+---
+object :  madhu 
+
+owner/user    |  group  | others 
+
+rwx               rwx     rwx 
+
+r - read - 4
+w - write - 2
+x - execute - 1 
+------------------------
+
+sed command -- sed 's/madhu/madhukiran/' test > test2
+
+==========================
+crontab
+
+
+=============
+TOMCAT USERS SCRIPT :
+
+
+<?xml version='1.0' encoding='utf-8'?>
+<tomcat-users>
+  <role rolename="manager-gui"/>
+  <user username="tomcat" password="Tomcat" roles="manager-gui, manager-script, manager-status"/>
+</tomcat-users>
+
+
+===========================
+TOMCAT SETUP SCRIPT :
+
+
+
+#SCRIPT FOR TOMCAT 
+
+#!/bin/bash 
+
+cd /opt
+
+sudo wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.95/bin/apache-tomcat-9.0.95.tar.gz
+sudo tar -xvf /opt/apache-tomcat-9.0.95.tar.gz
+
+cd /opt/apache-tomcat-9.0.95/webapps/manager/META-INF
+
+sudo sed -i 's/"127\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1"/".*"/g' context.xml
+
+cd /opt/apache-tomcat-9.0.95/conf
+
+sudo mv tomcat-users.xml bkp_tomcat-users.xml_27sep24
+
+sudo touch tomcat-users.xml
+sudo echo '<?xml version="1.0" encoding="utf-8"?>
+        <tomcat-users>
+        <role rolename="manager-gui"/>
+        <user username="tomcat" password="tomcat" roles="manager-gui, manager-script, manager-status"/>
+        </tomcat-users>' > tomcat-users.xml
+		
+cd /opt/apache-tomcat-9.0.95/conf/
+
+sudo sed -i 's/Connector port="8080"/Connector port="8091"/g' server.xml
+
+sudo /opt/apache-tomcat-9.0.95/bin/startup.sh
+
+==================================================
+DECLARATIVE CICD PIPELINE SCRIPT WITH 3 STAGES :
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('git clone ') {
+            steps {
+                echo 'SCM CLONE  World'
+				git branch: 'main', url: 'https://github.com/devopstraininghub/mindcircuit13.git'
+            }
+			}
+			
+			
+        stage('BUILD') {
+            steps {
+                echo 'BUILD'
+				sh 'mvn clean install'
+            }
+			}
+			
+        stage('deploy to tomcat') {
+            steps {
+                echo 'deploy to tomcat'
+				deploy adapters: [tomcat9(credentialsId: 'mc-tomcat', path: '', url: 'http://ec2-44-211-138-125.compute-1.amazonaws.com:8081/')], contextPath: 'fb', war: '"*/.war'
+            }
+			}
+			
+        }
+    
+}
+
+
+
+===================
+
+CICD AS A GUI ( FREE STYLE PROJECT ) 
+
+CICD PIPELINE AS CODE ( GROOVY SCRIPT) 
+
+======================
+
+JENKINS BACKUP :
+
+jenkins 
+
+chmod 777 /var 
+
+cd /var
+
+chmod 777 lib 
+
+
+cd lib 
+
+chmod 777 * 
+
+==============
+
+JENKINS MASTER SLAVE DISTRIBUTED ARCHITECTURE :
+
+mount -o remount,size=2G /tmp/
+
+=====================================
+DATE: 2 OCT 24 :
+
+
+windows :  JAVA + MAVEN 
+
+
+
+CUSTOM JAVA INSTALLATION ON WINDOWS : 
+JAVA 1.8 -- JAVA 8 
+
+
+ JAVA_HOME   -   C:\Program Files\Java\jdk-1.8
+  PATH :   C:\Program Files\Java\jdk-1.8\bin
+
+===============================
+MAVEN INSTALLATION ON LINUX :
+
+M2_HOME :  C:\Users\Dell\Downloads\apache-maven-3.9.9-bin\apache-maven-3.9.9
+PATH:   C:\Users\Dell\Downloads\apache-maven-3.9.9-bin\apache-maven-3.9.9\bin
+
+
+
+java download -- install 
+
+JAVA_HOME --- C:\Program Files\Java\jdk-1.8
+
+
+PATH -- C:\Program Files\Java\jdk-1.8\bin
+
+
+===========================================
+
+M2_HOME -- C:\Users\Dell\Downloads\apache-maven-3.9.6-bin\apache-maven-3.9.6
+PATH  C:\Users\Dell\Downloads\apache-maven-3.9.6-bin\apache-maven-3.9.6\bin
+
+=================================================
+
+DATE: 3 OCT 24 :
+
+mvn archetype:generate 
+POM.XML 
+MAVEN LIFE CYCLE & GOALS 
+CUSTOM JAVA INSTALL ON LINUX 
+
+
+
+windows /laptop ---> linux 
+
+   scp 
+   
+ scp srcpath destpath 
+ 
+   winscp 
+----------
+
+JAVA_HOME: /opt/java8/jdk1.8.0_421
+
+PATH: /opt/java8/jdk1.8.0_421/bin
+
+--------------------------------------------
+vim /etc/profile.d/java.sh 
+
+
+
+export JAVA_HOME=/opt/java8/jdk1.8.0_421
+export PATH=${JAVA_HOME}/bin:${PATH}
+
+
+source /etc/profile.d/java.sh 

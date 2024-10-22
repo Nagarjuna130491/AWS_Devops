@@ -1,0 +1,41 @@
+username:koilakunta.nagarjuna@gmail.com 
+password:Nagarjuna@1304
+===============================================================
+GIT VS GITHUB --- > SCM / VCS 
+
+===================
+
+git init 
+
+git config --global user.name "Madhu kiran"
+
+git config --global user.email "madhu@gmail.com"
+
+touch file1 file2 
+
+git add .  ( WS --> STAGING) 
+
+git commit -m "msg" 
+
+==========
+===============
+
+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
+=================
+
+GH ACCOUNT 
+
+CREATED OUR FIRST GH REPO -- 	B14 PROJECT REPO 
+
+--
+git clone <URL> 
+
+git clone https://github.com/devopstraininghub/b14projectrepo.git
+
+git add 
+
+git status 
+git commit 
+git status
+git log 
+git push

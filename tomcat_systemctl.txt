@@ -1,0 +1,28 @@
+# Create a systemd service file for Tomcat
+sudo bash -c 'cat <<EOL > /etc/systemd/system/tomcat.service
+[Unit]
+Description=Apache Tomcat 9
+After=network.target
+
+[Service]
+Type=forking
+
+ExecStart=/opt/apache-tomcat-9.0.95/bin/startup.sh
+ExecStop=/opt/apache-tomcat-9.0.95/bin/shutdown.sh
+
+User=root
+Group=root
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOL'
+
+# Reload systemd, enable, and start the Tomcat service
+sudo systemctl daemon-reload
+sudo systemctl enable tomcat
+sudo systemctl start tomcat
+
+# Check Tomcat status
+sudo systemctl status tomcat

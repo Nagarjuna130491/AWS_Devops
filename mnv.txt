@@ -1,0 +1,149 @@
+mvn clean install
+ mvn archetype:generate
+
+MVN LIFECYCLE 
+POM.XML explanation - ADDING DEPENDECIES IN POM.XML 
+mvn archetype:generate
+JENKINS adv interview scenarios 
+----------------------------------------------
+
+MVN LIFE CYCLE -- PHASES -- PLUGINS -- GOAL
+(go through this linked in post) 
+
+https://www.linkedin.com/posts/madhukiran-gorekar_maven-buildlifecycle-devops-activity-7247579291457093633-GBIP?utm_source=share&utm_medium=member_desktop
+
+=======================================
+
+Diffrent stages should be built on diffrent slaves Nodes : 
+
+pipeline {
+    agent none
+    stages {
+        stage('Clone Repository') {
+            agent { label 'slave1' } // Agent for Git operations
+            steps {
+               
+                git branch: 'main', url: 'https://github.com/Ramani-github/ramani-mindcircuit14.git'
+                
+                
+                sh 'ls -la'
+                
+                
+                stash includes: '', name: 'sourceCode'
+            }
+        }
+        
+        stage('Build with Maven') {
+            agent { label 'slave2' } // Agent for Maven build
+            steps {
+                script {
+                    
+                    unstash 'sourceCode'
+                    
+                   
+                    sh 'mvn clean package'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
+        }
+    }
+}
+
+
+
+===============================================
+
+BUILD SHOUD CONTINE EVEN IF A STAGE FAILS IN PIPELINE : (USING try & catch blocks) : 
+
+pipeline {
+    agent any
+    stages {
+	
+		    stage('Clean Workspace') {
+            steps {
+                cleanWs() 
+            }
+        }
+	       stage('git clone ') {
+            steps {
+			
+			script {                     
+                       git branch: 'main', url: 'https://github.com/Ramani-github/ramani-mindcircuit14.git'
+                      			
+                      } 
+             
+            }
+        }
+		
+           stage('build  1') { 
+            steps { 
+                script { 
+                    try { 
+                       sh 'mvn cleannn installll'                        
+                    } 
+					catch (Exception e) {                        
+                        echo "Stage 1 failed: ${e.message}" 
+                    } 
+                } 
+            } 
+        } 
+
+           stage('Final Stage') {
+            steps {
+                sh 'echo "Final steps."'
+            }
+        }
+    }
+}
+
+================================================================================
+
+PARALLEL stages execution: 
+
+pipeline {
+    agent any
+
+    stages {
+	
+	    stage('Clean Workspace') {
+             steps {
+                cleanWs() 
+                   }
+        }
+		
+        stage('Checkout') {
+            steps {
+                echo 'Cloning the repository...'
+                git branch: 'main', url: 'https://github.com/Ramani-github/mindcircuit13.git'
+            }
+        }
+
+        stage('deploy to multiple environments ') {
+            parallel {			
+			  stage('Lab') {
+                    steps {
+                        echo 'DEPLOYING ON lAB...'                        
+                    }
+					}
+              stage('sbox') {
+                    steps {
+                        echo 'Running Maven Package...'                        
+                    }
+                }
+             stage('UAT') {
+                    steps {
+                        echo 'Running Maven Install...'                       
+                    }
+                }                
+                }
+				}
+        }
+    }

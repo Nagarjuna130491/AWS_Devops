@@ -1,0 +1,40 @@
+cd /opt/
+ls -lrt
+rm -rf aws
+yum install java-17 -y
+wget https://download.sonatype.com/nexus/3/nexus-3.73.0-12-unix.tar.gz
+ls -lrt
+tar -xvzf nexus-3.73.0-12-unix.tar.gz
+ls -lrt
+mv nexus-3.73.0-12 nexus3
+ls -lrt
+chown -R ec2-user:ec2user nexus3 sonatype-work
+chown -R ec2-user:ec2-user nexus3 sonatype-work
+cd nexus3/
+ls -lrt
+cd bin
+ls -lrt
+vi nexus.rc
+from the above file uncomment it and keep as ec2-user
+pwd
+now create softlinkt for nexus
+ln -s /opt/nexus3/bin/nexus  /etc/init.d/nexus
+chkconfig --add nexus
+service nexus status
+service nexus start
+
+login through gui with port 8081 and admin password will be in below file.
+cat /opt/sonatype-work/nexus3/admin.password
+After that change the password.
+now create repos by following the steps below:
+goto settings-->repository-->create repository--mvn host(as your using maven in your deploy)
+
+now integration steps jenkins to nexus
+first update the pom.xml file with url repository in nexus in distrubtion managment.
+change versions too for sample
+
+create job and in build step mvn clean deploy.
+
+IN version if your using SNAPSHOT spell should be small
+
+it will be succesfully done. 
